@@ -10,8 +10,7 @@ object ApiClient {
     // Rick and Morty API'nin ana adresi
     private const val BASE_URL = "https://rickandmortyapi.com/api/"
 
-    // Hata ayıklama için (Opsiyonel ama ÇOK faydalı)
-    // Bu, attığımız isteklerin ve gelen cevapların logcat'te (konsolda) görünmesini sağlar.
+    // Bu aşağısı, attığımız isteklerin ve gelen cevapların logcat'te (konsolda) görünmesini sağlıyo.
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -30,7 +29,11 @@ object ApiClient {
         .build()
 
     /**
-     * Menümüzü (ApiService) oluşturan ve dışarıya servis eden kısım.
-     */
+     ApiService arayüzünü yani inteface'yi Retrofit ile canlandırıp projemizde kullanılabilir hale getirdim.*/
+
     val service: ApiService = retrofit.create(ApiService::class.java)
 }
+/** Retrofit bildiğimiz üzere OkHttpClient üzerine kurulu bi kütüphane
+ * İleride bir API KEY veyahut Token vs. gibi bir güvenlik önlemi eklenmesi
+ * Gerekirse kurmuş Olduğum bu yapı sayesinde OkHttpClient İçinden Kolayca
+ * gereken işlemler sağlanabilir*/

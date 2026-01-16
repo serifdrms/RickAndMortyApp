@@ -4,4 +4,12 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Gece modu splash arka planı (Koyu) -->
+        <item name="windowSplashScreenBackground">#121212</item>
+        <!-- Splash ekranı logosu -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.RickAndMortyApp</item>
+    </style>
 </resources>

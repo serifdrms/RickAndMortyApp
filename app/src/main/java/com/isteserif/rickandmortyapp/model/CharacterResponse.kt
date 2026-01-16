@@ -8,3 +8,8 @@ data class CharacterResponse(
     @SerializedName("results")
     val results: List<RickMortyCharacter>? // Karakter listesi
 )
+
+ /** API den paketimiz gelince info yani kaç sayfa olduğu bilgisi
+  * ile results yani karakterlerin listesi geliyor
+  */
+//Yani bi bakıma CharacterResponse sınıfımız iki ana parçayı bir arada tutuyor.

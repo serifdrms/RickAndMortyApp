@@ -14,11 +14,11 @@ data class RickMortyCharacter(
     @SerializedName("image")
     val image: String?,
 
-    // --- YENİ EKLENEN 3 ALAN ---
+    // Bunları sonradan ekledin UNUTMA ! Revizyonu YAP !!
     @SerializedName("gender")
     val gender: String?,
     @SerializedName("origin")
-    val origin: Origin?, // Az önce oluşturduğumuz Origin sınıfı
+    val origin: Origin?,
     @SerializedName("location")
-    val location: Location? // Az önce oluşturduğumuz Location sınıfı
+    val location: Location?
 )
