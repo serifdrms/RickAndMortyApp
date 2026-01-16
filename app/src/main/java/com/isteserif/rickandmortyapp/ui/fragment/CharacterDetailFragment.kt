@@ -17,12 +17,14 @@ class CharacterDetailFragment : Fragment() {
     private var _binding: FragmentCharacterDetailBinding? = null
     private val binding get() = _binding!!
 
-    // 1. Yeni "Genel Müdür"ümüzü (DetailViewModel) çağırıyoruz
+    // viewmodel oluşturup fragmentin yasamdöngüsüne dahil ediyoruz burada
     private val viewModel: DetailViewModel by viewModels()
 
-    // 2. "Safe Args" ile gelen argümanları (characterId) alıyoruz
+    // Diğer sayfadan gönderilen characterId'ye, sanki bu sınıfın bir değişkeni gibi
+    // ulaşabiliyoruz. Bunu Safe Args sayesinde yapabildik
     private val args: CharacterDetailFragmentArgs by navArgs()
 
+    // inflater kullanarak fragment_character_detail.xml dosyasını 'inflate' ediyoruz
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,37 +36,37 @@ class CharacterDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 3. "Genel Müdür"e (ViewModel) "Bana bu ID'li karakteri getir" diyoruz
+        // ViewModel'e istedigimiz ID'li karakteri getirmesi icin bu kısım
         viewModel.getCharacter(args.characterId)
 
-        // 4. "Genel Müdür"ün bize vereceği 'character' verisini dinlemeye başlıyoruz
-        // 4. "Genel Müdür"ün bize vereceği 'character' verisini dinlemeye başlıyoruz
         viewModel.character.observe(viewLifecycleOwner) { character ->
-            // 5. Veri geldiği an, XML'deki 'TextView' ve 'ImageView'leri doldur
+            // ve veri geldiği an, XML'deki 'TextView' ve 'ImageView'leri dolduruyor
 
             // Glide ile resmi bas
             Glide.with(requireContext())
                 .load(character.image)
                 .into(binding.imgCharacterDetail)
 
-            // 'binding' ile XML'e ulaşıp text'leri doldur
+            // 'binding' ile XML'e ulaşıp text'leri doldurtuyoz
             binding.tvNameDetail.text = character.name
             binding.tvStatusDetail.text = character.status
             binding.tvSpeciesDetail.text = character.species
 
-            // --- YENİ EKLENEN 3 SATIR ---
+
             binding.tvGenderDetail.text = character.gender
             // 'origin' ve 'location' nesnelerinin 'name' özelliğini alıyoruz
             binding.tvOriginDetail.text = "Köken: ${character.origin?.name}"
             binding.tvLocationDetail.text = "Konum: ${character.location?.name}"
         }
 
-        // 6. Hata olursa dinle (opsiyonel ama güzel)
+
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
+    // Bu kısım fragment yok edildiğinde binding'i temizler, opsiyonel ama
+    //verimlilik, güvenlik ve memory leak açısından profosyonelce bir kullanim.
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

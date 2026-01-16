@@ -12,9 +12,9 @@ class DetailViewModel : ViewModel() {
 
     private val repository = CharacterRepository()
 
-    // _character: Bu, "Müdür"ün sakladığı özel veridir (değiştirilebilir).
+    // _character: sadece bu sınıfın içindeki veri değiştirilebilir (backing property)
     private val _character = MutableLiveData<RickMortyCharacter>()
-    // character: Bu, "Garson"un (Fragment) dinlediği veridir (değiştirilemez).
+    // character: değiştirilemez yani "encapsulation" metodu (derste öğrenmiştik).
     val character: LiveData<RickMortyCharacter> = _character
 
     // Hata durumu için
@@ -26,13 +26,14 @@ class DetailViewModel : ViewModel() {
      * Gelen ID ile API'den veriyi çeker.
      */
     fun getCharacter(id: Int) {
-        // 'viewModelScope.launch' -> "Asenkron bir iş başlat"
+        // 'viewModelScope.launch' veri çekme işlemi uzun sürerse
+        // arka planda asenkron çalışmasını sağlar yoksa uygulama donar
+        // ayrıca uygulamadan çıkılırsa istek iptal edilir, memory leak önlenir.
         viewModelScope.launch {
             try {
                 val response = repository.getCharacter(id)
                 if (response.isSuccessful) {
-                    // Cevap başarılıysa, _character'ın "değerini" güncelle.
-                    // "Garson" (Fragment) bunu otomatik olarak fark edecek.
+                    // Cevap başarılıysa, postvalue ile LiveData'yı günceller.
                     _character.postValue(response.body())
                 } else {
                     _error.postValue("Hata: ${response.code()}")

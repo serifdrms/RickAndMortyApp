@@ -12,13 +12,14 @@ class CharacterRepository {
 
     private val apiService = ApiClient.service
 
+    // paging icin ana nesnemizi olusturalim
     fun getCharacters(name: String? = null): Flow<PagingData<RickMortyCharacter>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { CharacterPagingSource(apiService, name) }
+            pagingSourceFactory = { CharacterPagingSource(apiService, name) } //cha.pag.sou.connected
         ).flow
     }
     

@@ -13,29 +13,39 @@ import com.isteserif.rickandmortyapp.ui.fragment.CharacterListFragmentDirections
 
 class CharacterAdapter : PagingDataAdapter<RickMortyCharacter, CharacterAdapter.CharacterViewHolder>(CharacterComparator) {
 
-    inner class CharacterViewHolder(val binding: ItemCharacterBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    // Paging Kütüp deki veriyi alır xml'lerin içine yansıtır.
 
+    // 2 Secenegim vardı PagingDataAdapter-RecyclerView.Adapter ben
+    // pagingDataAdapter kullandım cünkü  Paging 3 sayesinde cok büyük veriyi
+    // hafıza yormadan sadece ekranda görünenleri yükleyerek yönetmemizi sağlıyor
+
+    inner class CharacterViewHolder(val binding: ItemCharacterBinding) :
+        RecyclerView.ViewHolder(binding.root) { // performans icin tutucu kullandim
+
+
+            //Burada karakter verisi ile XML tasarımını birbirine bağlıyoruz
         fun bind(character: RickMortyCharacter?) {
             if (character == null) return
 
             binding.tvCharacterName.text = character.name
+
+                // glide burda resmi indirip önbellege aliyor ve
+                // imageview'da gösteriyor önbellek netten tasarruf saglar
             Glide.with(binding.root.context)
                 .load(character.image)
                 .into(binding.imgCharacter)
 
-            // YENİ - TIKLAMA İŞLEMİ:
-            // 'itemView' (yani kartın kendisi) tıklandığında:
+            // 'itemView' (yani kartın kendisinr) tıklandiginde ne olacagi burda
             binding.root.setOnClickListener {
-                // 1. Tıklanan karakterin ID'sini al (null değilse)
+                // Tıklanan karakterin ID'sini al (null değilse)
                 character.id?.let { id ->
-                    // 2. Safe Args ile "aksiyonu" (koridoru) oluştur
+
+                    // Safe Args sayesinde detay fragmentine ID gönderirken
+                    // null veya yablis tip gönderme riski sifirlaniyor
                     val action =
                         CharacterListFragmentDirections
                             .actionCharacterListFragmentToCharacterDetailFragment(id)
 
-                    // 3. 'findNavController()' ile "haritayı" bul ve
-                    //    'navigate(action)' ile o koridora gir (ekranı değiştir)
                     it.findNavController().navigate(action)
                 }
             }
@@ -45,13 +55,18 @@ class CharacterAdapter : PagingDataAdapter<RickMortyCharacter, CharacterAdapter.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val binding =
             ItemCharacterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CharacterViewHolder(binding)
+        return CharacterViewHolder(binding) //bos kart olusturduk
     }
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position)) //kartı doldurttuk
     }
 
+
+    // Bu asagidaki kısım performans ve kullanici deneyimi acisindan önemli
+    // liste güncellendiginde areItemsTheSame ID check eder ayni kisi mi diye
+    // eger ayni kisiyse areContentsTheSame ise icindeki bilgileri de kontrol eder
+    // yani sadece degisenler güncellendigi icin kaydırma yaparken lag olmaz
     object CharacterComparator : DiffUtil.ItemCallback<RickMortyCharacter>() {
         override fun areItemsTheSame(oldItem: RickMortyCharacter, newItem: RickMortyCharacter): Boolean {
             return oldItem.id == newItem.id
